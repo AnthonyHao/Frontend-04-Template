@@ -1,0 +1,173 @@
+<style>
+  .cell {
+    display: inline-block;
+    width: 200px;
+    height: 200px;
+    line-height: 200px;
+    background: skyblue;
+    border: 1px dotted white;
+    vertical-align: middle;
+    text-align: center;
+    font-size: 150px;
+    color: red;
+  }
+</style>
+
+<html>
+  <div id='board'></div>
+</html>
+
+<script>
+  let pattern = [
+    [0, 0, 0],
+    [0, 0, 0],
+    [0, 0, 0]
+  ]
+  let player = 1
+
+  function userPlay(x, y) {
+    pattern[x][y] = player
+    if (check(pattern, player)) {
+      player ===  2 ? alert('Player 2 win!') : alert('Player 1 win!')
+    }
+    player = 3 - player
+    if (willWin(pattern, player)) {
+      player === 2 ? console.log('Player 2 will win!') : console.log('Player 1 will win!')
+    }
+    console.log(bestChoice(pattern, player))
+
+    show()
+    computerPlay()
+  }
+
+  function computerPlay() {
+    let choice = bestChoice(pattern, player)
+
+    if (choice.point) {
+      pattern[choice.point[0]][choice.point[1]] = player
+    }
+    console.log(pattern)
+
+    if (check(pattern, player)) {
+      player ===  2 ? alert('Player 2 win!') : alert('Player 1 win!')
+    }
+    player = 3 - player
+    show()
+  }
+
+  function show() {
+    const board = document.getElementById('board')
+    board.innerText = ''
+    for (let i = 0; i < 3; i++) {
+      for (let j = 0; j < 3; j++) {
+        let cell = document.createElement('div')
+        cell.classList.add('cell')
+        cell.innerText = pattern[j][i] === 2 ? 'X' : (pattern[j][i] === 1 ? 'O' : '')
+        cell.addEventListener('click', () => userPlay(j, i))
+        board.appendChild(cell)
+      }
+      const br = document.createElement('br')
+      board.appendChild(br)
+    }
+  }
+
+  function check(pattern, player) {
+    for (let i = 0; i < 3; i++) {
+      let win = true
+      for (let j = 0; j < 3; j++) {
+        if (pattern[j][i] !== player) {
+          win = false
+        }
+      }
+
+      if (win) {
+        return true
+      }
+    }
+
+    for (let i = 0; i < 3; i++) {
+      let win = true
+      for (let j = 0; j < 3; j++) {
+        if (pattern[i][j] !== player) {
+          win = false
+        }
+      }
+
+      if (win) {
+        return true
+      }
+    }
+
+    let win = true
+    for (let i = 0; i < 3; i++) {
+      if (pattern[i][i] !== player) {
+        win = false
+      }
+    }
+
+    if (win) {
+      return true
+    }
+
+    win = true
+    for (let i = 0; i < 3; i++) {
+      if (pattern[i][2 - i] !== player) {
+        win = false
+      }
+    }
+
+    return win
+  }
+
+  function willWin(pattern, player) {
+    for (let i = 0; i < 3; i++) {
+      for (let j = 0; j < 3; j++) {
+        if (pattern[i][j]) continue
+        let tmp = clone(pattern)
+        tmp[i][j] = player
+        if (check(tmp, player)) {
+          return [i, j]
+        }
+      }
+    }
+
+    return null
+  }
+
+  function clone(pattern) {
+    return JSON.parse(JSON.stringify(pattern))
+  }
+
+  function bestChoice(pattern, player) {
+    let p
+    if (p = willWin(pattern, player)) {
+      return {
+        point: p,
+        result: 1
+      }
+    }
+
+    let result = -2
+    let point = null
+    for (let i = 0; i < 3; i++) {
+      for (let j = 0; j < 3; j++) {
+        if (pattern[i][j]) continue
+        let tmp = clone(pattern)
+        tmp[i][j] = player
+        let r = bestChoice(tmp, 3 - player).result
+
+        if (r * -1 > result) {
+          result = r * -1
+          point = [i, j]
+        }
+      }
+    }
+
+    return {
+      point: point,
+      result: point ? result : 0
+    }
+  }
+
+  show()
+</script>

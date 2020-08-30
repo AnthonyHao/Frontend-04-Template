@@ -1,0 +1,163 @@
+<style>
+  .cell {
+    width: 100px;
+    height: 100px;
+    line-height: 100px;
+    text-align: center;
+    vertical-align: middle;
+    font-size: 100px;
+    color: red;
+    background: skyblue;
+    border: 1px solid white;
+    display: inline-block;
+  }
+</style>
+
+<html>
+  <div id='board'></div>
+</html>
+
+<script>
+  let pattern = [
+    [0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0]
+  ]
+  let player = 1
+
+  function check(pattern, player) {
+    for(let i = 0; i < 5; i++) {
+      let win = true
+      for (let j = 0; j < 5; j++) {
+        if (pattern[i][j] !== player) {
+          win = false
+        }
+      }
+      if (win) {
+        return true
+      }
+    }
+
+    for(let i = 0; i < 5; i++) {
+      let win = true
+      for (let j = 0; j < 5; j++) {
+        if (pattern[j][i] !== player) {
+          win = false
+        }
+      }
+      if (win) {
+        return true
+      }
+    }
+
+    let win = true
+    for(let i = 0; i < 5; i++) {
+      if (pattern[i][i] !== player) {
+          win = false
+        }
+    }
+    if (win) {
+      return true
+    }
+
+    win = true
+    for(let i = 0; i < 5; i++) {
+      if (pattern[i][5-4] !== player) {
+        win =false
+      }
+    }
+    return win
+  }
+
+  function willWin(pattern, player) {
+    for (let i = 0; i < 5; i++)
+      for (let j = 0; j < 5; j++) {
+        if (pattern[i][j]) continue
+        let tmp = clone(pattern)
+        tmp[i][j] = player
+        if (check(tmp, player)) {
+          return {
+            point: [i, j]
+          }
+        }
+      }
+
+    return null
+  }
+
+  function move(x, y) {
+    if (!pattern[x][y]) {
+      pattern[x][y] = player
+      show()
+      if (check(pattern, player)) {
+        player ===  2 ? alert('Player 2 win!') : alert('Player 1 win!')
+      }
+      player = 3 - player
+
+      if (willWin(pattern, player)) {
+        player === 2 ? console.log('Player 2 will win') : console.log('Player 1 will win')
+      }
+      // console.log(bestChoice(pattern, player))
+      // TODO: add the computer automation
+    } else {
+      alert('重复落子，请重下')
+    }
+  }
+
+  const clone = (pattern) => (JSON.parse(JSON.stringify(pattern)))
+
+  // TODO: compute the best choice
+  function bestChoice(pattern, player) {
+    let p
+    if (p = willWin(pattern, player)) {
+      return {
+        point: p,
+        result: 1
+      }
+    }
+
+    let result = -2
+    let point = null
+    outer: for (let i = 0; i < 5; i++) {
+      for (let j = 0; j < 5; j++) {
+        if (pattern[i][j]) continue
+        let tmp = clone(pattern)
+        tmp[i][j] = player
+        let r = bestChoice(tmp, 3 - player).result
+
+        if (r * -1 > result) {
+          result = r * -1
+          point = [i, j]
+        }
+
+        if (r === 1) {
+          break outer
+        }
+      }
+    }
+
+    return {
+      point: point,
+      result: point ? result : 0
+    }
+  }
+
+  function show() {
+    const board = document.getElementById('board')
+    board.innerHTML = ''
+    for(let i = 0; i < 5; i++) {
+      for(let j = 0; j < 5; j++) {
+        let cell = document.createElement('div')
+        cell.innerText = pattern[j][i] === 2 ? 'X' : pattern[j][i] === 1 ? 'O' : ''
+        cell.addEventListener('click', () => move(j, i))
+        cell.classList.add('cell')
+        board.appendChild(cell)
+      }
+      const br = document.createElement('br')
+      board.appendChild(br)
+    }
+  }
+  show()
+</script>
