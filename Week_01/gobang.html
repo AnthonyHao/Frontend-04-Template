@@ -19,11 +19,11 @@
 
 <script>
   let pattern = [
-    [0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0]
+    0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0
   ]
   let player = 1
 
@@ -31,7 +31,7 @@
     for(let i = 0; i < 5; i++) {
       let win = true
       for (let j = 0; j < 5; j++) {
-        if (pattern[i][j] !== player) {
+        if (pattern[i * 5 + j] !== player) {
           win = false
         }
       }
@@ -43,7 +43,7 @@
     for(let i = 0; i < 5; i++) {
       let win = true
       for (let j = 0; j < 5; j++) {
-        if (pattern[j][i] !== player) {
+        if (pattern[j * 5 + i ] !== player) {
           win = false
         }
       }
@@ -54,7 +54,7 @@
 
     let win = true
     for(let i = 0; i < 5; i++) {
-      if (pattern[i][i] !== player) {
+      if (pattern[i * 5 + i] !== player) {
           win = false
         }
     }
@@ -64,7 +64,7 @@
 
     win = true
     for(let i = 0; i < 5; i++) {
-      if (pattern[i][5-4] !== player) {
+      if (pattern[i * 5 - i + 4] !== player) {
         win =false
       }
     }
@@ -74,9 +74,9 @@
   function willWin(pattern, player) {
     for (let i = 0; i < 5; i++)
       for (let j = 0; j < 5; j++) {
-        if (pattern[i][j]) continue
+        if (pattern[i * 5 + j]) continue
         let tmp = clone(pattern)
-        tmp[i][j] = player
+        tmp[i * 5 + j] = player
         if (check(tmp, player)) {
           return {
             point: [i, j]
@@ -87,9 +87,9 @@
     return null
   }
 
-  function move(x, y) {
-    if (!pattern[x][y]) {
-      pattern[x][y] = player
+  function move(index) {
+    if (!pattern[index]) {
+      pattern[index] = player
       show()
       if (check(pattern, player)) {
         player ===  2 ? alert('Player 2 win!') : alert('Player 1 win!')
@@ -106,7 +106,7 @@
     }
   }
 
-  const clone = (pattern) => (JSON.parse(JSON.stringify(pattern)))
+  const clone = (pattern) => (Object.create(pattern))
 
   // TODO: compute the best choice
   function bestChoice(pattern, player) {
@@ -150,8 +150,8 @@
     for(let i = 0; i < 5; i++) {
       for(let j = 0; j < 5; j++) {
         let cell = document.createElement('div')
-        cell.innerText = pattern[j][i] === 2 ? 'X' : pattern[j][i] === 1 ? 'O' : ''
-        cell.addEventListener('click', () => move(j, i))
+        cell.innerText = pattern[i * 5 + j] === 2 ? 'X' : pattern[i * 5 + j] === 1 ? 'O' : ''
+        cell.addEventListener('click', () => move(i * 5 + j))
         cell.classList.add('cell')
         board.appendChild(cell)
       }
