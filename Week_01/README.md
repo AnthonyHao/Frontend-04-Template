@@ -47,3 +47,5 @@ console.log(o.b); // 100
 复制代码访问器属性跟数据属性不同，每次访问属性都会执行getter或者setter函数。这里我们的getter返回100， 所以o.b每次都得到了100。由于没有setter函数，所以o.b只能读不能写。
 JavaScript对象的运行时是一个“属性的集合”， 属性以字符串或者Symbol为Key，以数据属性特征值或者访问器熟悉感特征为value。
 对象是一个属性的索引结构（索引结构是一类常见的数据结构，我们可以把它理解成一个能够以比较快的速度用key来查找value的字典）。我们以上面的对象o为例，你可以想象一下“a”是key,{value: 2, writable: false, enumerable: false, configurable: true}是value。
+
+## 五子棋在调试bestChoice的时候页面就崩溃了，在递归的时候可能需要考虑优化？

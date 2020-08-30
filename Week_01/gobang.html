@@ -99,6 +99,7 @@
       if (willWin(pattern, player)) {
         player === 2 ? console.log('Player 2 will win') : console.log('Player 1 will win')
       }
+
       // console.log(bestChoice(pattern, player))
       // TODO: add the computer automation
     } else {
@@ -122,14 +123,14 @@
     let point = null
     outer: for (let i = 0; i < 5; i++) {
       for (let j = 0; j < 5; j++) {
-        if (pattern[i][j]) continue
+        if (pattern[i * 5 + j]) continue
         let tmp = clone(pattern)
-        tmp[i][j] = player
+        tmp[i * 5 + j] = player
         let r = bestChoice(tmp, 3 - player).result
 
         if (r * -1 > result) {
           result = r * -1
-          point = [i, j]
+          point = [i * 5 + j]
         }
 
         if (r === 1) {
