@@ -1,0 +1,78 @@
+<style>
+  .cell {
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    border-bottom: 1px solid white;
+    border-right: 1px solid white;
+    background: skyblue;
+  }
+</style>
+
+<html>
+  <div id='container'></div>
+</html>
+
+<script>
+  const map = localStorage['map'] ? localStorage['map'] : Array(10000).fill(0)
+  const container = document.getElementById('container')
+
+  for (let i = 0; i < 99; i++) {
+    for (let j = 0; j < 99; j++) {
+      const cell = document.createElement('div')
+      cell.classList.add('cell')
+      cell.addEventListener('mousemove', () => {
+        if (mousedown) {
+          if (clear) {
+            map[100 * i + j] = 0
+            cell.style.backgroundColor = 'skyblue'
+          } else {
+            map[100 * i + j] = 1
+            cell.style.backgroundColor = 'purple'
+          }
+        }
+      })
+      container.appendChild(cell)
+    }
+    container.appendChild(document.createElement('br'))
+  }
+
+  let mousedown = false
+  let clear
+  container.addEventListener('mousedown', e => {
+    mousedown = true
+    clear = (e.which === 3)
+  })
+
+  container.addEventListener('mouseup', () => { mousedown = false })
+  container.addEventListener('contextmenu', e => e.preventDefault())
+
+  function path(map, start, end) {
+    const queue = [start]
+
+    function insert(x, y) {
+      if (x < 0 || x >= 100 || y < 0 || y >= 100 ) return
+      if (map[x * 100 + y]) return
+
+      map[x * 100 + y] = 2
+      queue.push([x, y])
+    }
+
+    while(queue.length) {
+      let [x, y] = queue.shift()
+      console.log(x, y)
+      if (x === end[0] && y === end[1]) {
+        return true
+      }
+
+      insert(x - 1, y)
+      insert(x, y - 1)
+      insert(x, y + 1)
+      insert(x + 1, y)
+    }
+
+    return false
+  }
+
+  path(map, [0, 0], [5, 5])
+</script>
