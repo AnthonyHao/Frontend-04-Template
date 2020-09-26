@@ -1,5 +1,3 @@
-学习笔记
-
 产生式（BNF）
 尖括号括起来表示语法结构名
 
@@ -11,12 +9,12 @@
 * 协变与逆变： https://jkchao.github.io/typescript-book-chinese/tips/covarianceAndContravariance.html
 
 
-null是关键字，undefined不是关键字
+*null是关键字，undefined不是关键字*
 
-在设计对象的状态和行为时，我们总是遵循“行为改变状态”的原则。
+*在设计对象的状态和行为时，我们总是遵循“行为改变状态”的原则。*
 
-
+Object API
 建议只用前三类，第四个是ES3的。
 
 
-typeof function 的结果是function
+*typeof function 的结果是function*
