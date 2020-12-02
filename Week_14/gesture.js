@@ -136,7 +136,13 @@ let end = (touch, context) => {
     } else {
         d = Math.sqrt((touch.clientX - context.points[0].x) ** 2 + (touch.clientY - context.points[0].y) ** 2)
         v = d / (Date.now() - context.points[0].t)
-        console.log(v)
+
+        if (v > 1.5) {
+            console.log('isFlick')
+            context.isFlick = true
+        } else {
+            context.isFlick = false
+        }
     }
     // console.log('end', touch.clientX, touch.clientY)
 }
